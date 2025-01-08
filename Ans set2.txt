@@ -1,0 +1,188 @@
+1.
+
+
+
+#!/bin/bash
+
+# Calculate overtime pay for 10 employees
+rate_per_hour=12
+threshold_hours=40
+
+for i in {1..10}; do
+    echo -n "Enter hours worked by employee $i: "
+    read hours_worked
+
+    if [ $hours_worked -gt $threshold_hours ]; then
+        overtime=$((hours_worked - threshold_hours))
+        overtime_pay=$(echo "$overtime * $rate_per_hour" | bc)
+        echo "Employee $i's overtime pay is: Rs. $overtime_pay"
+    else
+        echo "Employee $i did not work overtime."
+    fi
+done
+
+
+
+
+
+2.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+// Function to convert a number to binary
+void print_binary(int num) {
+    printf("Binary representation of %d: ", num);
+    for (int i = 31; i >= 0; i--) {
+        printf("%d", (num >> i) & 1);
+    }
+    printf("\n");
+}
+
+// Function to check if a number is a palindrome
+int is_palindrome(int num) {
+    int reversed = 0, original = num, digit;
+    while (num > 0) {
+        digit = num % 10;
+        reversed = reversed * 10 + digit;
+        num /= 10;
+    }
+    return original == reversed;
+}
+
+int main() {
+    int num;
+
+    printf("Enter a number: ");
+    scanf("%d", &num);
+
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Child process: Binary representation
+        printf("Child process:\n");
+        print_binary(num);
+        exit(0);
+    } else if (pid > 0) {
+        // Parent process: Check palindrome
+        wait(NULL); // Wait for the child process to finish
+        printf("Parent process:\n");
+        if (is_palindrome(num)) {
+            printf("%d is a palindrome.\n", num);
+        } else {
+            printf("%d is not a palindrome.\n", num);
+        }
+    } else {
+        // Fork failed
+        perror("Fork failed");
+        return 1;
+    }
+
+    return 0;
+}
+
+
+
+
+
+3.
+
+#!/bin/bash
+
+echo -n "Enter internal marks: "
+read internal_marks
+echo -n "Enter attendance percentage: "
+read attendance_percentage
+echo -n "Enter external marks: "
+read external_marks
+
+# Check eligibility criteria
+message=""
+if [ $internal_marks -lt 16 ]; then
+    message="Internal marks are insufficient."
+fi
+
+if [ $attendance_percentage -lt 40 ]; then
+    if [ -n "$message" ]; then
+        message="$message Attendance percentage is insufficient."
+    else
+        message="Attendance percentage is insufficient."
+    fi
+fi
+
+if [ $external_marks -lt 24 ]; then
+    if [ -n "$message" ]; then
+        message="$message External marks are insufficient."
+    else
+        message="External marks are insufficient."
+    fi
+fi
+
+if [ -n "$message" ]; then
+    echo "$message"
+else
+    echo "Allowed for Next Semester."
+fi
+
+
+
+
+4.
+
+
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+sem_t semA, semB, semC;
+
+void *threadA(void *arg) {
+    for (int i = 3; i <= 20; i += 9) {
+        sem_wait(&semA);
+        printf("A%d ", i);
+        sem_post(&semB);
+    }
+    return NULL;
+}
+
+void *threadB(void *arg) {
+    for (int i = 2; i <= 20; i += 9) {
+        sem_wait(&semB);
+        printf("B%d ", i);
+        sem_post(&semC);
+    }
+    return NULL;
+}
+
+void *threadC(void *arg) {
+    for (int i = 1; i <= 20; i += 9) {
+        sem_wait(&semC);
+        printf("C%d ", i);
+        sem_post(&semA);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t tA, tB, tC;
+
+    sem_init(&semA, 0, 1);
+    sem_init(&semB, 0, 0);
+    sem_init(&semC, 0, 0);
+
+    pthread_create(&tA, NULL, threadA, NULL);
+    pthread_create(&tB, NULL, threadB, NULL);
+    pthread_create(&tC, NULL, threadC, NULL);
+
+    pthread_join(tA, NULL);
+    pthread_join(tB, NULL);
+    pthread_join(tC, NULL);
+
+    sem_destroy(&semA);
+    sem_destroy(&semB);
+    sem_destroy(&semC);
+
+    return 0;
+}
