@@ -1,0 +1,123 @@
+1. Merge, Sort, and Display Content (prog)
+
+#!/bin/bash
+# Merge, sort, and save the content of files a.txt, b.txt, c.txt
+cat a.txt b.txt c.txt | sort > result
+
+# Display the sorted content
+cat result
+
+
+---
+
+2. System Information Display (systeminfo)
+
+#!/bin/bash
+# Display system information
+echo "Login Name: $(whoami)"
+echo "System Name: $(uname -s)"
+echo "Shell Type: $SHELL"
+echo "Current Directory: $(pwd)"
+echo "Files in Current Directory:"
+ls -1
+
+
+---
+
+3. Date and Calendar Display (dtcal)
+
+#!/bin/bash
+# Display date and calendar for a specific month
+echo "Date    : $(date '+%Y-%m-%d')"
+echo "Calendar:"
+cal 3 2022
+
+
+---
+
+4. Line, Word, and Character Count of dtcal (nvwc)
+
+#!/bin/bash
+# Count lines, words, and characters in the file dtcal
+filename="dtcal"
+line_count=$(wc -l < "$filename")
+word_count=$(wc -w < "$filename")
+char_count=$(wc -m < "$filename")
+
+echo "Filename: $filename"
+echo "Line count: $line_count"
+echo "Word count: $word_count"
+echo "Char count: $char_count"
+
+
+---
+
+5. Line, Word, and Character Count of Any File (nvwc2)
+
+#!/bin/bash
+# Count lines, words, and characters in a file passed as an argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <filename>"
+    exit 1
+fi
+
+filename=$1
+if [ -f "$filename" ]; then
+    line_count=$(wc -l < "$filename")
+    word_count=$(wc -w < "$filename")
+    char_count=$(wc -m < "$filename")
+
+    echo "Filename: $filename"
+    echo "Line count: $line_count"
+    echo "Word count: $word_count"
+    echo "Char count: $char_count"
+else
+    echo "Error: File $filename does not exist."
+    exit 1
+fi
+
+
+---
+
+6. Command-Line Arguments Count and Display (darg)
+
+#!/bin/bash
+# Display number of command-line arguments and their values
+if [ $# -eq 0 ]; then
+    echo "No arguments provided."
+else
+    echo "Total number of arguments: $#"
+    echo "First argument: $1"
+    echo "Second argument: $2"
+    echo "All arguments: $*"
+fi
+
+
+---
+
+7. Display Specific Lines of a File (ndisp)
+
+#!/bin/bash
+# Display first n and last m lines of a file
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <n> <m> <filename>"
+    exit 1
+fi
+
+n=$1
+m=$2
+filename=$3
+
+if [ -f "$filename" ]; then
+    echo "First $n lines:"
+    head -n "$n" "$filename"
+    echo
+    echo "Last $m lines:"
+    tail -n "$m" "$filename"
+else
+    echo "Error: File $filename does not exist."
+    exit 1
+fi
+
+
+---
