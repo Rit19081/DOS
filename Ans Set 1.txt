@@ -1,0 +1,151 @@
+1.
+
+
+#!/bin/bash
+
+# Check if an argument is passed
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <number>"
+    exit 1
+fi
+
+# Calculate factorial
+num=$1
+factorial=1
+
+for ((i=1; i<=num; i++)); do
+    factorial=$((factorial * i))
+done
+
+echo "The factorial of $num is: $factorial"
+
+2.
+
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    char input[100], reversed[100];
+    printf("Enter a string: ");
+    scanf("%s", input);
+
+    pid_t pid = fork();
+
+    if (pid == 0) { // Child process
+        int len = strlen(input);
+        for (int i = 0; i < len; i++) {
+            reversed[i] = input[len - i - 1];
+        }
+        reversed[len] = '\0';
+        printf("Reversed string: %s\n", reversed);
+        exit(0);
+    } else { // Parent process
+        wait(NULL); // Wait for child to finish
+        int is_palindrome = 1, len = strlen(input);
+        for (int i = 0; i < len / 2; i++) {
+            if (input[i] != input[len - i - 1]) {
+                is_palindrome = 0;
+                break;
+            }
+        }
+        if (is_palindrome) {
+            printf("The string is a palindrome.\n");
+        } else {
+            printf("The string is not a palindrome.\n");
+        }
+    }
+
+    return 0;
+}
+
+
+3.
+
+
+#!/bin/bash
+
+# Input marks for 5 subjects
+total=0
+for ((i=1; i<=5; i++)); do
+    echo -n "Enter marks for subject $i: "
+    read marks
+    total=$((total + marks))
+done
+
+# Calculate percentage
+percentage=$((total / 5))
+
+# Determine division
+if [ $percentage -ge 60 ]; then
+    echo "First Division"
+elif [ $percentage -ge 50 ]; then
+    echo "Second Division"
+elif [ $percentage -ge 40 ]; then
+    echo "Third Division"
+else
+    echo "Fail"
+fi
+
+
+
+4.
+
+
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+sem_t semA, semB, semC;
+
+void *threadA(void *arg) {
+    for (int i = 1; i <= 20; i += 12) {
+        sem_wait(&semA);
+        printf("A%d ", i);
+        sem_post(&semB);
+    }
+    return NULL;
+}
+
+void *threadB(void *arg) {
+    for (int i = 2; i <= 20; i += 12) {
+        sem_wait(&semB);
+        printf("B%d ", i);
+        sem_post(&semC);
+    }
+    return NULL;
+}
+
+void *threadC(void *arg) {
+    for (int i = 3; i <= 20; i += 12) {
+        sem_wait(&semC);
+        printf("C%d ", i);
+        sem_post(&semA);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t tA, tB, tC;
+
+    sem_init(&semA, 0, 1); // Start with thread A
+    sem_init(&semB, 0, 0);
+    sem_init(&semC, 0, 0);
+
+    pthread_create(&tA, NULL, threadA, NULL);
+    pthread_create(&tB, NULL, threadB, NULL);
+    pthread_create(&tC, NULL, threadC, NULL);
+
+    pthread_join(tA, NULL);
+    pthread_join(tB, NULL);
+    pthread_join(tC, NULL);
+
+    sem_destroy(&semA);
+    sem_destroy(&semB);
+    sem_destroy(&semC);
+
+    return 0;
+}
